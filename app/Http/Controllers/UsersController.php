@@ -33,7 +33,7 @@ class UsersController extends Controller
             'user_name' => 'required|min:5',
             'password' => 'required|min:5',
             'type' => 'required',
-            'email' => 'required',
+            'email' => 'required|regex:/^.+@.+$/i',
             'people.name' => 'required',
             'people.document' => 'required',
             'people.birthday' => 'required'
@@ -72,8 +72,8 @@ class UsersController extends Controller
             DB::commit();
 
             return response()->json([
-                'message' => 'ok', 
-                $user
+                'message' => 'success', 
+                'created' => $user
             ], 200);
 
         } catch (\Throwable $th) {
@@ -102,8 +102,8 @@ class UsersController extends Controller
         }
 
         return response()->json([
-            'message' => 'ok', 
-            'user' => $user
+            'message' => 'success', 
+            'finded' => $user
         ], 200);
     }
 
