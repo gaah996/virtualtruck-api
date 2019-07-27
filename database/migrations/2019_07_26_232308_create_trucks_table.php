@@ -20,8 +20,8 @@ class CreateTrucksTable extends Migration
             $table->string('model',45)->nullable();
             $table->double('capacity');
             $table->double('limitkg');
-            $table->bigInteger('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->bigInteger('driver_id')->unsigned();
+            $table->foreign('driver_id')->references('id')->on('drivers')->onDelete('cascade');
             $table->string('year',45)->nullable();
             $table->timestamps();
         });
