@@ -30,7 +30,8 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('freight')->group(function() {
         Route::get('/user', 'FreightsController@findAllbyUser');
         Route::get('/driver', 'FreightsController@findAllbyDriver');
-        Route::post('/', 'FreightsController@register');
+        Route::post('/new', 'FreightsController@register');
+        Route::post('/accept', 'FreightsController@accept')->where('freightid', '[0-9]+');
     });
 
     Route::prefix('qualification')->group(func)
