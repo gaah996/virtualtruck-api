@@ -21,7 +21,7 @@ class CreateTrucksTable extends Migration
             $table->double('capacity');
             $table->double('limitkg');
             $table->bigInteger('driver_id')->unsigned();
-            $table->foreign('driver_id')->references('id')->on('drivers')->onDelete('cascade');
+            $table->foreign('driver_id')->references('id')->on('drivers');
             $table->string('year',45)->nullable();
             $table->timestamps();
         });
