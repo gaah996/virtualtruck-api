@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\User;
+use App\Person;
 
 class UsersController extends Controller
 {
@@ -28,42 +30,41 @@ class UsersController extends Controller
     // post
     public function register(Request $Request) {
         $this->validate($Request, [
-            'user_name' => 'required|min:10',
-            'password' => 'required|min:10',
+            'user_name' => 'required|min:5',
+            'password' => 'required|min:5',
             'type' => 'required',
             'email' => 'required',
             'people.name' => 'required',
-            'people.document' => 'required|unique:users',
+            'people.document' => 'required',
             'people.birthday' => 'required'
         ]);
         
         $user = null;
         $person = null;
-
+        $Request = json_decode($Request);
         /* 
          * TRANSACTION
          * 
          * Transaction is used to in case of any error when 
          * registering the record in a table, terminate the 
          * process and not register anything
-         * 
          */
 
         DB::beginTransaction();
         try {
 
             $person = Person::create([
-                'name' => $Request->person->name,
-                'document' => $Request->person->document,
-                'birthday' => $Request->person->birthday
+                'name' => $Request['person']['name'],
+                'document' => $Request['person']['document'],
+                'birthday' => $Request['person']['birthday']
             ]);
 
             $user = User::create([
-                'user_name' => $Request->name,
-                'email' => $Request->email,
-                'password' => bcrypt($Request->password),
-                'type' => $Request->type,
-                'person_id' => $person->id,
+                'user_name' => $Request['name'],
+                'email' => $Request['email'],
+                'password' => bcrypt($Request['password']),
+                'type' => $Request['type'],
+                'person_id' => $person['id'],
                 'status' => true
             ]);
 
@@ -91,7 +92,7 @@ class UsersController extends Controller
         try {
             $user = Auth::user();
 
-            $user = User::find($id)->first();
+            $user = User::find($id);
 
         } catch (\Throwable $th) {
             return response()->json([

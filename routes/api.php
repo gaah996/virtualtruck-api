@@ -8,15 +8,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::prefix('user')->group(function () {
-    Route::post('register', 'UserController@register');
-    Route::post('login', 'UserController@login');
-    Route::get('/{id}', 'UsersController@find')->where('id', '[0-9]+');
+    Route::post('register', 'UsersController@register');
+    Route::post('login', 'UsersController@login');
 });
 
 
 //API authenticated routes
 Route::middleware('auth:api')->group(function () {
     Route::prefix('user')->group(function () {
-
+        Route::get('/{id}', 'UsersController@find')->where('id', '[0-9]+');
     });
 });
