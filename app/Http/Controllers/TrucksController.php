@@ -6,7 +6,7 @@ use App\Truck;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class TrucksControllers extends Controller
+class TrucksController extends Controller
 {
     public function updateTruck(Request $request, $idTruck){
         $user=Auth::user();

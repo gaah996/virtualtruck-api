@@ -24,8 +24,13 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::prefix('truck')->group(function () {
+
+        Route::put('/update/{id}', 'TrucksController@updateTruck')->where('id', '[0-9]+');
+        Route::delete('/delete/{id}', 'TrucksController@deleteTruck')->where('id', '[0-9]+');
+
         Route::put('/up/{id}', 'TrucksControllers@updateTruck')->where('id', '[0-9]+');
         Route::delete('/del/{id}', 'TrucksControllers@deleteTruck')->where('id', '[0-9]+');
+
     });
     Route::prefix('freight')->group(function() {
         Route::get('/user', 'FreightsController@findAllbyUser');
@@ -34,5 +39,8 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/accept', 'FreightsController@accept')->where('freightid', '[0-9]+');
     });
 
-   // Route::prefix('qualification')->group(func)
+    Route::prefix('qualification')->group(function() {
+        Route::get('/{id}','QualificationsController@createQualification')->where('id', '[0-9]+');
+        Route::get('/show','QualificationsController@showQualification');
+    });
 });
