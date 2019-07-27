@@ -18,12 +18,12 @@ class CreatePeopleTable extends Migration
             $table->string('name',45);
             $table->string('lastname', 45)->nullable();
             $table->string('document',14);
-            $table->string('streetNumber',45);
-            $table->string('street',255);
-            $table->string('city',255);
-            $table->string('state', 3);
-            $table->string('country', 3);
-            $table->string('district', 255);
+            $table->string('streetNumber',45)->nullable();
+            $table->string('street',255)->nullable();
+            $table->string('city',255)->nullable();
+            $table->string('state', 3)->nullable();
+            $table->string('country', 3)->nullable();
+            $table->string('district', 255)->nullable();
             $table->date('birthday');
             $table->timestamps();
         });

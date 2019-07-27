@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Person;
+use Laravel\Passport\Bridge\PersonalAccessGrant;
+use DateInterval;
 
 class UsersController extends Controller
 {
@@ -21,9 +23,14 @@ class UsersController extends Controller
         if(Auth::attempt($Request->all())){
             $user = Auth::user();
             $user['token'] = $this->setUserToken($user)->accessToken;
-            return response()->json(['user' => $user], 200);
+            return response()->json([
+                'message' => 'success',
+                'user' => $user
+            ], 200);
         } else {
-            return response()->json(['error' => 'Couldn\'t find user' ], 420);
+            return response()->json([
+                'message' => 'Couldn\'t find user' 
+            ], 420);
         }
     }
 
@@ -34,14 +41,13 @@ class UsersController extends Controller
             'password' => 'required|min:5',
             'type' => 'required',
             'email' => 'required|regex:/^.+@.+$/i',
-            'people.name' => 'required',
-            'people.document' => 'required',
-            'people.birthday' => 'required'
+            'person.name' => 'required',
+            'person.document' => 'required',
+            'person.birthday' => 'required'
         ]);
         
         $user = null;
         $person = null;
-        $Request = json_decode($Request);
         /* 
          * TRANSACTION
          * 
@@ -54,19 +60,24 @@ class UsersController extends Controller
         try {
 
             $person = Person::create([
-                'name' => $Request['person']['name'],
-                'document' => $Request['person']['document'],
-                'birthday' => $Request['person']['birthday']
+                'name' => $Request->person['name'],
+                'document' => $Request->person['document'],
+                'birthday' => $Request->person['birthday']
             ]);
 
             $user = User::create([
-                'user_name' => $Request['name'],
-                'email' => $Request['email'],
-                'password' => bcrypt($Request['password']),
-                'type' => $Request['type'],
-                'person_id' => $person['id'],
+                'user_name' => $Request->user_name,
+                'email' => $Request->email,
+                'password' => bcrypt($Request->password),
+                'type' => $Request->type,
+                'person_id' => $person->id,
                 'status' => true
             ]);
+
+            $user->person;
+
+            // Get Token
+            $user['token'] = $this->setUserToken($user)->accessToken;
 
             // Save changes to database
             DB::commit();
@@ -82,7 +93,7 @@ class UsersController extends Controller
 
             return response()->json([
                 'message' => $th->getMessage(), 
-                $user
+                'created' => $user
             ], 400);
         }
     }

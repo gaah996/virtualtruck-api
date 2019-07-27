@@ -46,9 +46,7 @@ class DriversController extends Controller
             'truck.limitkg' => 'required',
             'truck.year' => 'required|numeric'
         ]);
-
-        $Request = json_decode($Request);
-
+        
         try {
             DB::beginTransaction();
             $person = Person::create([
