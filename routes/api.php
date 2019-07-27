@@ -23,6 +23,8 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/{id}', 'DriversController@find')->where('id', '[0-9]+');
     });
 
+    Route::prefix('truck')->group(function (){
+       Route::put('/truck','TrucksControllers@updateTruck');
     Route::prefix('freight')->group(function() {
         Route::get('/user', 'FreightsController@findAllbyUser');
         Route::get('/driver', 'FreightsController@findAllbyDriver');

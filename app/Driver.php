@@ -21,3 +21,4 @@ class Driver extends Model
         return $this->belongsToMany(Driver::class);
     }
 }
+
