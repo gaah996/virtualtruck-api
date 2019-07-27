@@ -24,8 +24,13 @@ Route::middleware('auth:api')->group(function () {
     });
 
     Route::prefix('truck')->group(function () {
+
         Route::put('/update/{id}', 'TrucksController@updateTruck')->where('id', '[0-9]+');
         Route::delete('/delete/{id}', 'TrucksController@deleteTruck')->where('id', '[0-9]+');
+
+        Route::put('/up/{id}', 'TrucksControllers@updateTruck')->where('id', '[0-9]+');
+        Route::delete('/del/{id}', 'TrucksControllers@deleteTruck')->where('id', '[0-9]+');
+
     });
     Route::prefix('freight')->group(function() {
         Route::get('/user', 'FreightsController@findAllbyUser');
