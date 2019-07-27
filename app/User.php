@@ -11,7 +11,7 @@ class User extends Authenticatable
 {
     use HasApiToken, Notifiable;
 
-    /**gntjty
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
