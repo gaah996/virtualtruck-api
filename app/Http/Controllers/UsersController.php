@@ -21,7 +21,7 @@ class UsersController extends Controller
             'email' => 'required_if:user_name,""'
         ]);
 
-        if(Auth::attempt($Request->all())){
+        if(Auth::attempt(['email' => $Request->email, 'password' => $Request->password])){
             $user = Auth::user();
 
             $user = User::find($user->id);
@@ -76,6 +76,7 @@ class UsersController extends Controller
 
             $person = Person::create([
                 'name' => $Request->person['name'],
+                'lastname' => $Request->person['lastname'],
                 'document' => $Request->person['document'],
                 'birthday' => $Request->person['birthday']
             ]);

@@ -36,11 +36,12 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/user', 'FreightsController@findAllbyUser');
         Route::get('/driver', 'FreightsController@findAllbyDriver');
         Route::post('/new', 'FreightsController@register');
-        Route::post('/accept', 'FreightsController@accept')->where('freightid', '[0-9]+');
+        Route::post('/accept', 'FreightsController@accept');
+        Route::post('/finish', 'FreightsController@finish');
     });
 
     Route::prefix('qualification')->group(function() {
-        Route::get('/{id}','QualificationsController@createQualification')->where('id', '[0-9]+');
+        Route::post('/','QualificationsController@createQualification');
         Route::get('/show','QualificationsController@showQualification');
     });
 });

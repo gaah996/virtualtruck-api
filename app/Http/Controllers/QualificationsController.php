@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Qualification;
 use http\Env\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use mysql_xdevapi\Exception;
 
@@ -19,17 +20,18 @@ class QualificationsController extends Controller
             $qualifications = Qualification::create([
                 'name' => $request['name']
             ]);
-            return response()->json(['message' => 'success', 'Qualification created', 'qualification' => $qualifications], 200);
+            return response()->json(['message' => 'Qualification created', 'qualification' => $qualifications], 200);
         } catch (\Exception $exception) {
-            return response()->json(['message' => 'error', 'Couldn\'t create qualification'], 500);
+            return response()->json(['message' => 'error', 'exception' => $exception->getMessage()], 500);
         }
     }
 
     public function showQualification()
     {
+        $user = Auth::user();
         $qualifications = Qualification::all();
         try {
-            return response()->json(['message' => 'qualifications', $qualifications]);
+            return response()->json(['message' => 'success', 'qualifications' => $qualifications], 200);
         } catch (\Exception $exception) {
             return response()->json(['message' => 'error', 'Couldn\'t show qualifications, try again'], 400);
         }

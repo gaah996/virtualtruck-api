@@ -16,12 +16,13 @@ class FreightsController extends Controller
     public function findAllbyUser()
     {
         $user = Auth::user();
+        $Freights = null;
         try {
-            $Freights = Freight::where('user_id', $user->id)->paginate(10)->get();
-            return response()->json([
-                'message' => 'success',
-                $Freights
-            ], 200);
+            $Freights = Freight::where('user_id', $user->id)->paginate(10);
+            return response()->json(
+                $Freights,
+                200
+            );
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => $th->getMessage(),
@@ -34,18 +35,34 @@ class FreightsController extends Controller
     public function findAllbyDriver()
     {
         $user = Auth::user();
+        $Freights = null;
         try {
-            $Freights = Freight::where('user_id_driver', $user->id)->paginate(10)->get();
-            return response()->json([
-                'message' => 'success',
-                $Freights
-            ], 200);
+            if ($user->type == 2) {
+                $user->person;
+                $user->person->driver;
+                $Freights = Freight::where('driver_id', $user->person->driver->id)->paginate(10);
+                return response()->json([
+                    'message' => 'success',
+                    $Freights
+                ], 200);
+            }
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'error',
                 $Freights
             ], 400);
         }
+    }
+
+    //get
+    public function findAlltoAccept()
+    {
+        $user = Auth::user();
+        if ($user->type != 2)
+            return response()->json(['message' => 'user needs to be driver to enable this route'], 200);
+
+        $Freights = Freight::find()
+            ->where('driver_id', null);
     }
 
     //post
@@ -57,7 +74,9 @@ class FreightsController extends Controller
             'origin' => 'required',
             'destin' => 'required',
             'price' => 'required',
-            'type_id' => 'required_if:type.description,""'
+            'type_id' => 'required_if:type.description,""',
+            'distance' => 'required',
+            'time' => 'required'
         ]);
 
 
@@ -70,7 +89,7 @@ class FreightsController extends Controller
                     'status' => true,
                     'qualification_id' => 1
                 ]);
-            else if($Request->type_id)
+            else if ($Request->type_id)
                 $Type = Type::find($Request->type_id);
 
             $Freight = Freight::create([
@@ -79,8 +98,12 @@ class FreightsController extends Controller
                 'price' => str_replace(',', '.', $Request->price),
                 'type_id' => $Type->id,
                 'user_id' => $user->id,
-                'status' => 1
+                'status' => 1,
+                'distance' => $Request->distance,
+                'time' => $Request->time
             ]);
+
+            $Freight->type;
 
             // Broadcast
             broadcast(new Send($Freight));
@@ -102,17 +125,56 @@ class FreightsController extends Controller
     {
         try {
             $user = Auth::user();
+
+            if ($user->type != 2)
+                return response()->json([
+                    'message' => 'user needs to be driver to enable this route'
+                ], 403);
+
             $user->person;
             $user->person->driver;
+            $freight = Freight::find($Request->freight_id);
+            if (!$freight)
+                return response()->json([
+                    'message' => 'freight not found'
+                ], 404);
+            $freight->driver_id = $user->person->driver->id;
+            $freight->status = 2;
+            $freight->save();
+
+            // Broadcast
+            broadcast(new Send($freight));
+
+            return response()->json([
+                'message' => 'success',
+                'freight' => $freight
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ], 400);
+        }
+    }
+
+    public function finish(Request $Request)
+    {
+        try {
+            $user = Auth::user();
+            $user->person;
+            $user->person->driver;
+
             if (!$user->person->driver) {
                 return response()->json([
-                    'message' => 'the logged in user must be the driver type to perform a freight'
+                    'message' => 'user needs to be driver to enable this route'
                 ], 403);
             }
 
             $freight = Freight::find($Request->freight_id);
-            $freight->user_id_driver = $user->person->driver->id;
+            $freight->status = 3;
             $freight->save();
+
+            // Broadcast
+            broadcast(new Send($freight));
 
             return response()->json([
                 'message' => 'success',

@@ -24,6 +24,8 @@ class CreateFreightsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->bigInteger('type_id')->unsigned();
             $table->foreign('type_id')->references('id')->on('types')->onDelete('cascade');
+            $table->string('distance');
+            $table->string('time');
             $table->timestamps();
         });
     }
