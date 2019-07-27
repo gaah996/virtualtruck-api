@@ -13,6 +13,10 @@ class Driver extends Model
         return $this->belongsTo(Person::class);
     }
 
+    public function truck(){
+        return $this->belongsTo(Truck::class);
+    }
+
     public function qualifications(){
         return $this->belongsToMany(Driver::class);
     }

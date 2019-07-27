@@ -2,10 +2,6 @@
 
 use Illuminate\Http\Request;
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::post('login', 'UsersController@login');
 
 Route::prefix('user')->group(function () {
@@ -29,5 +25,9 @@ Route::middleware('auth:api')->group(function () {
 
     Route::prefix('truck')->group(function (){
        Route::put('/truck','TrucksControllers@updateTruck');
+    Route::prefix('freight')->group(function() {
+        Route::get('/user', 'FreightsController@findAllbyUser');
+        Route::get('/driver', 'FreightsController@findAllbyDriver');
+        Route::post('/', 'FreightsController@register');
     });
 });

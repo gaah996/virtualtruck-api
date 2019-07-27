@@ -19,7 +19,7 @@ class CreateFreightsTable extends Migration
             $table->string('destin',255);
             $table->double('price');
             $table->integer('status');
-            $table->integer('user_id_driver')->nullable();
+            $table->integer('driver_id')->nullable();
             $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->bigInteger('type_id')->unsigned();

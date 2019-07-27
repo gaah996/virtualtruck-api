@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Person;
+use App\Truck;
 use Laravel\Passport\Bridge\PersonalAccessGrant;
 use DateInterval;
 
@@ -15,14 +16,29 @@ class UsersController extends Controller
     // post
     public function login(Request $Request) {
         $this->validate($Request, [
-            'user_name' => 'required|exists:users,user_name',
-            'password' => 'required|min:8',
-            'email' => 'required_if:user_name==null'
+            'user_name' => 'required_if:email,""',
+            'password' => 'required|min:5',
+            'email' => 'required_if:user_name,""'
         ]);
 
         if(Auth::attempt($Request->all())){
             $user = Auth::user();
-            $user['token'] = $this->setUserToken($user)->accessToken;
+
+            $user = User::find($user->id);
+            $user->person;
+            
+            if($user->type == 2) {
+                $user->person->driver;
+                $user->person->driver->truck = Truck::where('driver_id', $user->person->driver->id);
+            }
+
+            if($user->status == 0){
+                return response()->json([
+                    'message' => 'user disabled',
+                    'user' => $user
+                ], 200);
+            }
+                $user['token'] = $this->setUserToken($user)->accessToken;
             return response()->json([
                 'message' => 'success',
                 'user' => $user
