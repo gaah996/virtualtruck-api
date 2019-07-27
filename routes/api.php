@@ -36,5 +36,6 @@ Route::middleware('auth:api')->group(function () {
 
     Route::prefix('qualification')->group(function() {
         Route::get('/{id}','QualificationsController@createQualification')->where('id', '[0-9]+');
+        Route::get('/show','QualificationsController@showQualification');
     });
 });
