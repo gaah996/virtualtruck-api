@@ -14,7 +14,7 @@ class DriversController extends Controller
         try {
             $driver = Driver::find($id);
             return response()->json([
-                'message'=>'ok', 
+                'message'=>'success', 
                 'driver' => $driver
             ], 200);
         } catch (\Throwable $th) {
@@ -46,7 +46,7 @@ class DriversController extends Controller
             'truck.limitkg' => 'required',
             'truck.year' => 'required|numeric'
         ]);
-        
+
         try {
             DB::beginTransaction();
             $person = Person::create([
@@ -84,7 +84,7 @@ class DriversController extends Controller
             DB::commit();
 
             return response()->json([
-                'message' => 'ok', 
+                'message' => 'success', 
                 'created' => $truck
             ], 200);
         } catch (\Throwable $th) {
