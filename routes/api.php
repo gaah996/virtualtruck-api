@@ -26,4 +26,8 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('driver')->group(function () {
         Route::get('/{id}', 'DriversController@find')->where('id', '[0-9]+');
     });
+
+    Route::prefix('truck')->group(function (){
+       Route::put('/truck','TrucksControllers@updateTruck');
+    });
 });

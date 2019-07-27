@@ -29,8 +29,8 @@ class UsersController extends Controller
             ], 200);
         } else {
             return response()->json([
-                'message' => 'Couldn\'t find user' 
-            ], 420);
+                'message' => 'Couldn\'t find user'
+            ], 404);
         }
     }
 
@@ -45,14 +45,14 @@ class UsersController extends Controller
             'person.document' => 'required',
             'person.birthday' => 'required'
         ]);
-        
+
         $user = null;
         $person = null;
-        /* 
+        /*
          * TRANSACTION
-         * 
-         * Transaction is used to in case of any error when 
-         * registering the record in a table, terminate the 
+         *
+         * Transaction is used to in case of any error when
+         * registering the record in a table, terminate the
          * process and not register anything
          */
 
@@ -83,16 +83,16 @@ class UsersController extends Controller
             DB::commit();
 
             return response()->json([
-                'message' => 'success', 
+                'message' => 'success',
                 'created' => $user
             ], 200);
 
         } catch (\Throwable $th) {
-            // Restore database 
+            // Restore database
             DB::rollback();
 
             return response()->json([
-                'message' => $th->getMessage(), 
+                'message' => $th->getMessage(),
                 'created' => $user
             ], 400);
         }
@@ -113,7 +113,7 @@ class UsersController extends Controller
         }
 
         return response()->json([
-            'message' => 'success', 
+            'message' => 'success',
             'finded' => $user
         ], 200);
     }
