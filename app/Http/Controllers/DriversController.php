@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
+use App\User;
+use App\Person;
+use App\Driver;
+use App\Truck;
 use Illuminate\Http\Request;
 use function GuzzleHttp\json_decode;
 
@@ -46,7 +51,10 @@ class DriversController extends Controller
             'truck.limitkg' => 'required',
             'truck.year' => 'required|numeric'
         ]);
-
+        $user = null;
+        $person = null;
+        $driver = null;
+        $truck = null;
         try {
             DB::beginTransaction();
             $person = Person::create([
@@ -56,7 +64,7 @@ class DriversController extends Controller
             ]);
     
             $user = User::create([
-                'user_name' => $Request['name'],
+                'user_name' => $Request['user_name'],
                 'email' => $Request['email'],
                 'password' => bcrypt($Request['password']),
                 'type' => $Request['type'],
@@ -69,7 +77,7 @@ class DriversController extends Controller
                 'person_id' => $person->id
             ]);
     
-            $truck = Trick::create([
+            $truck = Truck::create([
                 'plate' => $Request['truck']['plate'],
                 'brand' => $Request['truck']['brand'],
                 'model' => $Request['truck']['model'],
