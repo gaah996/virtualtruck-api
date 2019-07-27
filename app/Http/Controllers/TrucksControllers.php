@@ -38,7 +38,7 @@ class TrucksControllers extends Controller
     public function deleteTruck($idTruck){
         $user=Auth::user();
         try{
-            $trucks = Truck::findOrFail$idTruck();
+            $trucks = Truck::findOrFail($idTruck);
             try{
                 $trucks->delete();
                 return response()->json(['sucess','Truck deleted whith sucess'], 200);
