@@ -18,7 +18,7 @@ class CreateDriversTable extends Migration
             $table->string('cnh',11);
             $table->boolean('status')->default(true);
             $table->Biginteger('person_id')->unsigned();
-            $table->foreign('person_id')->references('id')->on('persons')->onDelete('cascade');
+            $table->foreign('person_id')->references('id')->on('people')->onDelete('cascade');
             $table->timestamps();
         });
     }
