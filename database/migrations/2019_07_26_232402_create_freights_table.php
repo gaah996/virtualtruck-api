@@ -17,7 +17,7 @@ class CreateFreightsTable extends Migration
             $table->bigIncrements('id');
             $table->string('origin',255);
             $table->string('destin',255);
-            $table->double('price');
+            $table->double('price',18,2);
             $table->integer('status');
             $table->integer('driver_id')->nullable();
             $table->bigInteger('user_id')->unsigned();
