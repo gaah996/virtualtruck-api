@@ -71,7 +71,6 @@ class UsersController extends Controller
          * registering the record in a table, terminate the
          * process and not register anything
          */
-
         DB::beginTransaction();
         try {
 

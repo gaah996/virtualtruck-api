@@ -6,8 +6,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Freight;
 use App\User;
+use App\Type;
 use Illuminate\Support\Facades\DB;
-use PHPUnit\Util\Type;
+use App\Events\Send;
 
 class FreightsController extends Controller
 {
@@ -56,16 +57,21 @@ class FreightsController extends Controller
             'origin' => 'required',
             'destin' => 'required',
             'price' => 'required',
-            'type_id' => 'required|numeric',
-            'type.description' => 'required'
+            'type_id' => 'required_if:type.description,""'
         ]);
+
 
         try {
             DB::beginTransaction();
-            $Type = Type::create([
-                'description' => $Request->description,
-                'status' => true
-            ]);
+            $Type = null;
+            if ($Request->type['description'] != "")
+                $Type = Type::create([
+                    'description' => $Request->type['description'],
+                    'status' => true,
+                    'qualification_id' => 1
+                ]);
+            else if($Request->type_id)
+                $Type = Type::find($Request->type_id);
 
             $Freight = Freight::create([
                 'origin' => $Request->origin,
@@ -75,6 +81,9 @@ class FreightsController extends Controller
                 'user_id' => $user->id,
                 'status' => 1
             ]);
+
+            // Broadcast
+            broadcast(new Send($Freight));
 
             DB::commit();
             return response()->json([
@@ -104,12 +113,11 @@ class FreightsController extends Controller
             $freight = Freight::find($Request->freight_id);
             $freight->user_id_driver = $user->person->driver->id;
             $freight->save();
-            
+
             return response()->json([
                 'message' => 'success',
                 'freight' => $freight
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => $th->getMessage()
