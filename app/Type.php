@@ -6,13 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Type extends Model
 {
+    protected $fillable = [
+        'description','status','qualification_id'
+    ];
         public function freight(){
             return $this->hasOne(Freight::class);
         }
 
-        public function types()
+        public function qualifications()
         {
-            return $this->belongsToMany(Type::class);
+            return $this->belongsToMany(Qualification::class);
         }
-
 }
